@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,8 +12,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <script>
-    // Aplica o tema salvo antes da pintura, para não piscar.
-    try { var t = localStorage.getItem('tema'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
     document.documentElement.classList.add('js');
   </script>
 </head>
@@ -61,10 +59,6 @@
       </nav>
       <div class="topbar__actions">
         <a href="index.html#simulador" class="btn btn--amber btn--sm hide-sm">Simular</a>
-        <button class="icon-btn" id="tema" type="button" aria-label="Alternar tema claro/escuro">
-          <svg class="ico ico--moon"><use href="#i-moon"/></svg>
-          <svg class="ico ico--sun"><use href="#i-sun"/></svg>
-        </button>
         <button class="icon-btn show-sm" id="menuBtn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menuMobile">
           <svg class="ico"><use href="#i-menu"/></svg>
         </button>
@@ -125,7 +119,7 @@
             <div><span class="kicker">Capítulo 11.4 do notebook</span><h2>Do 1º para o 2º turno, em 4 passos</h2></div>
           </header>
           <ol class="steps__list">
-            <li><b>Ponto de partida.</b> Flávio e Lula começam com o valor das suas retas em x = 100 (ou com o resultado oficial, se você escolher essa base). Supomos que quem votou neles no 1º turno repete o voto.</li>
+            <li><b>Ponto de partida.</b> Flávio e Lula começam com o valor das suas retas em x = 100. Supomos que quem votou neles no 1º turno repete o voto.</li>
             <li><b>Votos herdados.</b> Cada bloco da 3ª via (Cury, Renan Santos, Caiado, Zema e Demais) é multiplicado pelo percentual que vai para cada finalista. A parte que não vai para ninguém vira branco, nulo ou abstenção.</li>
             <li><b>Somar tudo.</b> O total de cada finalista é o ponto de partida mais o que ele herdou de todos os blocos.</li>
             <li><b>Voltar para 100% dos válidos.</b> Como parte dos votos pode sair da conta, dividimos cada total pela soma dos dois.</li>

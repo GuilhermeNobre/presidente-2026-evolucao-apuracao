@@ -80,7 +80,7 @@
       const q = new URLSearchParams(location.search);
       const c = Number(q.get('c'));
       if (CORTES.includes(c)) estado.corte = c;
-      if (q.get('b') === 'o') estado.base = 'oficial';
+      // Base "Resultado oficial" bloqueada até existir resultado oficial.
       const t = (q.get('t') || '').split(',');
       if (t.length === BLOCOS.length) {
         t.forEach((par, i) => {
@@ -596,7 +596,7 @@
     $$('[data-base]').forEach((b) => b.addEventListener('click', () => { estado.base = b.dataset.base; atualizar('base'); }));
     // setas nos grupos de rádio
     $$('[role="radiogroup"]').forEach((grupo) => grupo.addEventListener('keydown', (ev) => {
-      const bts = $$('[role="radio"]', grupo), i = bts.indexOf(document.activeElement);
+      const bts = $$('[role="radio"]:not([disabled])', grupo), i = bts.indexOf(document.activeElement);
       if (i < 0) return;
       const d = ev.key === 'ArrowRight' || ev.key === 'ArrowDown' ? 1 : ev.key === 'ArrowLeft' || ev.key === 'ArrowUp' ? -1 : 0;
       if (!d) return;
@@ -625,17 +625,9 @@
   }
 
   // =========================================================
-  //  Página: tema, menu, progresso, revelação, scrollspy, dock
+  //  Página: menu, progresso, revelação, scrollspy, dock
   // =========================================================
   function ligarPagina() {
-    const raiz = document.documentElement;
-    const escuroSistema = window.matchMedia('(prefers-color-scheme: dark)');
-    $('#tema').addEventListener('click', () => {
-      const atual = raiz.dataset.theme || (escuroSistema.matches ? 'dark' : 'light');
-      raiz.dataset.theme = atual === 'dark' ? 'light' : 'dark';
-      try { localStorage.setItem('tema', raiz.dataset.theme); } catch (e) { /* sem armazenamento */ }
-    });
-
     const menuBtn = $('#menuBtn'), menu = $('#menuMobile');
     const fechar = () => { menu.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); };
     menuBtn.addEventListener('click', () => { menu.hidden = !menu.hidden; menuBtn.setAttribute('aria-expanded', String(!menu.hidden)); });

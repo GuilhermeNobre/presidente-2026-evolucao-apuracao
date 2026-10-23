@@ -1,4 +1,4 @@
-/* Página de metodologia: tema, menu, progresso, entrada ao rolar e tabela das retas. */
+/* Página de metodologia: menu, progresso, entrada ao rolar e tabela das retas. */
 (() => {
   'use strict';
   const D = window.DADOS;
@@ -6,15 +6,6 @@
   const $$ = (s) => Array.from(document.querySelectorAll(s));
   const fmt = (v, d = 2) => new Intl.NumberFormat('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }).format(v);
   const sinal = (v, d = 2) => { const r = +v.toFixed(d); return (r > 0 ? '+' : r < 0 ? '−' : '') + fmt(Math.abs(r), d); };
-
-  // Tema claro/escuro (mesma chave da página principal)
-  const raiz = document.documentElement;
-  const escuroSistema = window.matchMedia('(prefers-color-scheme: dark)');
-  $('#tema').addEventListener('click', () => {
-    const atual = raiz.dataset.theme || (escuroSistema.matches ? 'dark' : 'light');
-    raiz.dataset.theme = atual === 'dark' ? 'light' : 'dark';
-    try { localStorage.setItem('tema', raiz.dataset.theme); } catch (e) { /* sem armazenamento */ }
-  });
 
   const menuBtn = $('#menuBtn'), menu = $('#menuMobile');
   menuBtn.addEventListener('click', () => { menu.hidden = !menu.hidden; menuBtn.setAttribute('aria-expanded', String(!menu.hidden)); });

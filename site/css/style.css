@@ -750,3 +750,8 @@ input[type=range]:focus-visible::-moz-range-thumb { background: var(--amber); }
 .footer__links { display: flex; flex-wrap: wrap; gap: 8px; }
 .footer__links a { font-family: var(--font-mono); font-size: .8rem; font-weight: 700; text-decoration: none; color: #E2E8F0; padding: 6px 10px; border-radius: 8px; border: 1.5px solid #334155; background: #1E293B; }
 .footer__links a:hover { border-color: var(--amber); color: var(--amber); }
+
+/* Opção bloqueada (ex.: "Resultado oficial" enquanto não há resultado) */
+.seg button[disabled] { opacity: .5; cursor: not-allowed; }
+.seg button[disabled]:hover { background: transparent; }
+.soon { font-family: var(--font-mono); font-size: .66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 1px 5px; margin-left: 4px; border-radius: 5px; border: 1.5px solid currentColor; vertical-align: 1px; }
