@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2º Turno em Jogo · Simulador acadêmico</title>
+  <meta name="description" content="Simulador acadêmico do 2º turno presidencial de 2026: regressão linear simples sobre a apuração do 1º turno e transferência de votos da 3ª via. Não é previsão eleitoral.">
+  <meta name="theme-color" content="#0F172A">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1' y='1' width='30' height='30' rx='7' fill='%23F59E0B' stroke='%230F172A' stroke-width='2'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='900' font-size='14' text-anchor='middle' fill='%230F172A'%3E2T%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    // Aplica o tema salvo antes da pintura, para não piscar.
+    try { var t = localStorage.getItem('tema'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    document.documentElement.classList.add('js');
+  </script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7v10H7"/></symbol>
+      <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></symbol>
+      <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+      <symbol id="i-dashed" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-dasharray="3.5 3"/></symbol>
+      <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+      <symbol id="i-live" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 16.24a6 6 0 0 1 0-8.49M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></symbol>
+      <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+      <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></symbol>
+      <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></symbol>
+      <symbol id="i-sigma" viewBox="0 0 24 24"><path d="M18 7V4H6l6 8-6 8h12v-3"/></symbol>
+      <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+      <symbol id="i-steps" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+    </defs>
+  </svg>
+
+  <a class="skip" href="#simulador">Pular para o simulador</a>
+
+  <div class="progress" aria-hidden="true"><div class="progress__bar" id="progresso"></div></div>
+
+  <header class="topbar">
+    <div class="wrap topbar__in">
+      <a href="#topo" class="logo" aria-label="2º Turno em Jogo, início">
+        <span class="logo__mark">2T</span>
+        <span class="logo__txt">
+          <strong>2º TURNO EM JOGO</strong>
+          <small>REGRESSÃO · TRANSFERÊNCIA · 2026</small>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Seções">
+        <a href="#simulador" data-spy="simulador">01 Simulador</a>
+        <a href="#apuracao" data-spy="apuracao">02 Apuração</a>
+        <a href="#tempo-real" data-spy="tempo-real">03 Tempo real</a>
+        <a href="metodologia.html">Metodologia</a>
+      </nav>
+      <div class="topbar__actions">
+        <a href="#simulador" class="btn btn--amber btn--sm hide-sm">Simular</a>
+        <button class="icon-btn" id="tema" type="button" aria-label="Alternar tema claro/escuro">
+          <svg class="ico ico--moon"><use href="#i-moon"/></svg>
+          <svg class="ico ico--sun"><use href="#i-sun"/></svg>
+        </button>
+        <button class="icon-btn show-sm" id="menuBtn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menuMobile">
+          <svg class="ico"><use href="#i-menu"/></svg>
+        </button>
+      </div>
+    </div>
+    <nav class="menu-mobile" id="menuMobile" hidden aria-label="Seções (celular)">
+      <a href="#simulador">01 · Simulador do 2º turno</a>
+      <a href="#apuracao">02 · Como a apuração evoluiu</a>
+      <a href="#tempo-real">03 · Tempo real (em construção)</a>
+      <a href="metodologia.html">Metodologia e limitações</a>
+    </nav>
+  </header>
+
+  <main id="topo">
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="hero__bg" aria-hidden="true">
+        <span class="shape shape--1"></span><span class="shape shape--2"></span>
+        <span class="shape shape--3"></span><span class="shape shape--4"></span>
+      </div>
+      <div class="wrap hero__grid">
+        <div class="hero__copy reveal">
+          <span class="tag tag--cyan"><svg class="ico"><use href="#i-sigma"/></svg> Estudo acadêmico · machine learning · regressão linear</span>
+          <h1>Para onde vão os <span class="hl">7,8%</span> que ficaram de fora?</h1>
+          <p class="lead">
+            Flávio Bolsonaro e Lula disputam o 2º turno separados por menos de 2 pontos.
+            Para este estudo, desenvolvemos <strong>modelos de machine learning</strong> com
+            <strong>regressão linear</strong>, treinados sobre cada atualização da apuração do 1º turno.
+            Aqui você usa esses modelos e decide como se dividem os eleitores de
+            <strong>Cury, Renan Santos, Caiado, Zema</strong> e dos demais. O resultado é recalculado na hora.
+          </p>
+          <div class="callout">
+            <span class="callout__ico"><svg class="ico"><use href="#i-alert"/></svg></span>
+            <p><strong>Simulação, não previsão.</strong> Os números saem das suas hipóteses de transferência e de um modelo propositalmente simples. Não é pesquisa eleitoral.</p>
+          </div>
+          <div class="hero__cta">
+            <a href="#simulador" class="btn btn--amber"><svg class="ico"><use href="#i-sliders"/></svg> Abrir o simulador</a>
+            <a href="#apuracao" class="btn btn--ghost">Ver a regressão <svg class="ico"><use href="#i-arrow"/></svg></a>
+          </div>
+        </div>
+
+        <aside class="card score reveal" aria-labelledby="placarTitulo">
+          <div class="score__head">
+            <div>
+              <span class="kicker">Resultado oficial · 100% das urnas</span>
+              <h2 id="placarTitulo">Placar do 1º turno</h2>
+            </div>
+            <span class="pill pill--ok">FINAL</span>
+          </div>
+          <div class="score__duo">
+            <div class="score__cand">
+              <img src="image/flavio-retrato.webp" alt="Flávio Bolsonaro" width="96" height="96" class="avatar avatar--f">
+              <div>
+                <span class="score__name">Flávio Bolsonaro</span>
+                <span class="score__pct num" data-count="47.03">47,03%</span>
+              </div>
+            </div>
+            <div class="score__cand score__cand--r">
+              <img src="image/lula-retrato.webp" alt="Lula" width="96" height="96" class="avatar avatar--l">
+              <div>
+                <span class="score__name">Lula</span>
+                <span class="score__pct num" data-count="45.16">45,16%</span>
+              </div>
+            </div>
+          </div>
+          <div class="stack stack--hero" role="img" aria-label="Flávio 47,03%, Lula 45,16%, terceira via 7,81% dos votos válidos">
+            <span class="stack__seg stack__seg--f" style="--w:47.03"></span>
+            <span class="stack__seg stack__seg--x" style="--w:7.81"></span>
+            <span class="stack__seg stack__seg--l" style="--w:45.16"></span>
+          </div>
+          <div class="score__legend">
+            <span><i class="dot dot--f"></i>Flávio</span>
+            <span><i class="dot dot--x"></i>3ª via em jogo: <b class="num">7,81%</b></span>
+            <span><i class="dot dot--l"></i>Lula</span>
+          </div>
+          <ul class="score__facts">
+            <li><b class="num" data-count="1.87" data-suffix=" p.p.">1,87 p.p.</b><span>de vantagem do Flávio</span></li>
+            <li><b class="num" data-count="9.32" data-suffix=" mi">9,32 mi</b><span>votos na 3ª via</span></li>
+            <li><b class="num" data-count="383" data-dec="0" data-suffix="">383</b><span>atualizações da apuração</span></li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ 01 SIMULADOR ============ -->
+    <section class="section section--dark" id="simulador">
+      <div class="wrap">
+        <header class="sec-head reveal">
+          <span class="tag tag--amber">Módulo 01 · Você decide a transferência</span>
+          <h2>Simulador do 2º turno</h2>
+          <p>
+            Para cada bloco da 3ª via, arraste para o lado de quem deve receber os votos e diga quantos eleitores
+            não vão votar em ninguém (branco, nulo ou abstenção). É o <a href="https://github.com/GuilhermeNobre/presidente-2026-evolucao-apuracao/blob/main/notebooks/regressao_linear.ipynb" target="_blank" rel="noopener">capítulo 11 do notebook</a>, ao vivo.
+          </p>
+        </header>
+
+        <div class="sim-controls reveal">
+          <div class="ctrl">
+            <span class="ctrl__label">Ponto de partida</span>
+            <div class="seg seg--dark" role="radiogroup" aria-label="Ponto de partida do 1º turno" id="baseGroup">
+              <button type="button" role="radio" data-base="reta">Retas da regressão</button>
+              <button type="button" role="radio" data-base="oficial">Resultado oficial</button>
+            </div>
+          </div>
+          <div class="ctrl">
+            <span class="ctrl__label">Treinar as retas até</span>
+            <div class="seg seg--dark" role="radiogroup" aria-label="Treinar as retas com as urnas até" data-corte-group>
+              <button type="button" role="radio" data-corte="30">30%</button>
+              <button type="button" role="radio" data-corte="50">50%</button>
+              <button type="button" role="radio" data-corte="75">75%</button>
+              <button type="button" role="radio" data-corte="100">100%</button>
+            </div>
+          </div>
+          <div class="ctrl ctrl--grow">
+            <span class="ctrl__label">Cenários prontos</span>
+            <div class="presets" id="presets">
+              <button type="button" class="chip" data-preset="neutro">⚖️ 50/50 para todos</button>
+              <button type="button" class="chip" data-preset="notebook">📓 Cenário do notebook</button>
+              <button type="button" class="chip" data-preset="flavio">🔵 Onda Flávio</button>
+              <button type="button" class="chip" data-preset="lula">🔴 Onda Lula</button>
+              <button type="button" class="chip" data-preset="abstencao">🚪 Abstenção alta</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sim-grid">
+          <div class="blocks" id="blocks"><!-- preenchido pelo app.js --></div>
+
+          <aside class="sim-side">
+            <div class="card result" id="result" aria-labelledby="resTitulo">
+              <div class="result__head">
+                <div>
+                  <span class="kicker">Votos válidos no 2º turno</span>
+                  <h3 id="resTitulo">Resultado simulado</h3>
+                </div>
+                <span class="pill" id="baseBadge"></span>
+              </div>
+
+              <div class="duel">
+                <figure class="duel__cand" id="candF">
+                  <div class="duel__photo"><img src="image/flavio-retrato.webp" alt="" width="120" height="120"><span class="crown" aria-hidden="true"><svg class="ico"><use href="#i-trophy"/></svg></span></div>
+                  <figcaption>Flávio Bolsonaro</figcaption>
+                  <output class="duel__pct num" id="pctF">0,00%</output>
+                  <small class="num" id="votF"></small>
+                </figure>
+                <span class="duel__vs" aria-hidden="true">×</span>
+                <figure class="duel__cand" id="candL">
+                  <div class="duel__photo"><img src="image/lula-retrato.webp" alt="" width="120" height="120"><span class="crown" aria-hidden="true"><svg class="ico"><use href="#i-trophy"/></svg></span></div>
+                  <figcaption>Lula</figcaption>
+                  <output class="duel__pct num" id="pctL">0,00%</output>
+                  <small class="num" id="votL"></small>
+                </figure>
+              </div>
+
+              <div class="tug" aria-hidden="true">
+                <div class="tug__f" id="tugF"></div>
+                <div class="tug__l" id="tugL"></div>
+                <span class="tug__mid"><b>50%</b></span>
+              </div>
+
+              <p class="verdict" id="verdict"></p>
+              <p class="sr-only" id="anuncio" aria-live="polite"></p>
+
+              <dl class="kpis">
+                <div><dt>Herdado pelo Flávio</dt><dd class="num" id="kHerdF"></dd></div>
+                <div><dt>Herdado pelo Lula</dt><dd class="num" id="kHerdL"></dd></div>
+                <div><dt>Sai da conta</dt><dd class="num" id="kFora"></dd></div>
+              </dl>
+
+              <div class="result__actions">
+                <button type="button" class="btn btn--sm btn--ghost" id="btnReset"><svg class="ico"><use href="#i-reset"/></svg> Zerar</button>
+                <button type="button" class="btn btn--sm btn--ghost" id="btnLink"><svg class="ico"><use href="#i-link"/></svg> <span>Copiar link do cenário</span></button>
+              </div>
+            </div>
+
+            <div class="card virada" id="virada">
+              <div class="virada__head">
+                <svg class="ico"><use href="#i-target"/></svg>
+                <h4>Ponto de virada</h4>
+              </div>
+              <p id="viradaTxt"></p>
+              <svg id="sens" viewBox="0 0 360 150" role="img" aria-labelledby="sensT">
+                <title id="sensT">Percentual do Lula no 2º turno conforme a fatia da 3ª via que ele recebe</title>
+              </svg>
+            </div>
+          </aside>
+        </div>
+
+        <details class="card steps reveal" id="steps">
+          <summary><svg class="ico"><use href="#i-steps"/></svg> Como chegamos nesse número? <span class="steps__hint">o passo a passo do capítulo 11.4</span></summary>
+          <div class="steps__body">
+            <ol class="steps__list">
+              <li><b>Ponto de partida.</b> Cada finalista começa com <span id="sPartida"></span>. Supomos que quem votou neles no 1º turno repete o voto.</li>
+              <li><b>Votos herdados.</b> Cada bloco é multiplicado pelo percentual que vai para cada finalista:</li>
+            </ol>
+            <div class="table-wrap">
+              <table class="tbl" id="stepsTable">
+                <thead><tr><th scope="col">Bloco</th><th scope="col">Tamanho</th><th scope="col">% p/ Flávio</th><th scope="col">pts Flávio</th><th scope="col">% p/ Lula</th><th scope="col">pts Lula</th><th scope="col">Sai da conta</th></tr></thead>
+                <tbody></tbody>
+                <tfoot></tfoot>
+              </table>
+            </div>
+            <ol class="steps__list" start="3">
+              <li><b>Somar tudo.</b> <span id="sSoma"></span></li>
+              <li><b>Voltar para 100% dos válidos.</b> <span id="sNorm"></span></li>
+            </ol>
+            <div class="formula">
+              <span>F₂ = ŷ<sub>F</sub>(100) + Σ t<sub>F,g</sub> · ŷ<sub>g</sub>(100)</span>
+              <span>L₂ = ŷ<sub>L</sub>(100) + Σ t<sub>L,g</sub> · ŷ<sub>g</sub>(100)</span>
+              <span>Flávio = 100 · F₂ ÷ (F₂ + L₂)</span>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ 02 APURAÇÃO ============ -->
+    <section class="section" id="apuracao">
+      <div class="wrap">
+        <header class="sec-head reveal">
+          <span class="tag tag--coral">Módulo 02 · A apuração em movimento</span>
+          <h2>Uma reta para cada candidato</h2>
+          <p>
+            Cada ponto é uma atualização do TSE: no eixo x, o <strong>% de urnas apuradas</strong>; no y, o
+            <strong>% dos votos válidos</strong>. A linha tracejada é a regressão linear simples
+            <span class="mono">ŷ = β₀ + β₁·x</span>, e o seu valor em x = 100 é a "previsão" de fim de apuração.
+            Mude o treino para ver o que a reta teria previsto no meio da noite.
+          </p>
+        </header>
+
+        <div class="chart-layout">
+          <div class="card chart-card reveal">
+            <div class="chart-toolbar">
+              <div class="legend" aria-label="Legenda">
+                <span><i class="lg-line lg-line--f"></i>Flávio</span>
+                <span><i class="lg-line lg-line--l"></i>Lula</span>
+                <span><i class="lg-dash"></i>Reta ajustada</span>
+                <span><i class="lg-ring"></i>Reta em 100%</span>
+                <span><i class="lg-dot"></i>Resultado oficial</span>
+              </div>
+              <div class="seg" role="radiogroup" aria-label="Treinar a reta com as urnas até" data-corte-group>
+                <span class="seg__label">Treinar até</span>
+                <button type="button" role="radio" data-corte="30">30%</button>
+                <button type="button" role="radio" data-corte="50">50%</button>
+                <button type="button" role="radio" data-corte="75">75%</button>
+                <button type="button" role="radio" data-corte="100">100%</button>
+              </div>
+            </div>
+            <div class="chart-wrap" id="chartWrap">
+              <svg id="chart" viewBox="0 0 820 440" role="img" aria-labelledby="chartTitle chartDesc">
+                <title id="chartTitle">Evolução da apuração do 1º turno com retas de regressão</title>
+                <desc id="chartDesc">Percentual dos votos válidos de Flávio Bolsonaro e Lula conforme o percentual de urnas apuradas, com as retas ajustadas e a extrapolação até 100%.</desc>
+              </svg>
+              <div class="tip" id="tip" hidden></div>
+            </div>
+            <p class="chart-note" id="chartNote"></p>
+          </div>
+
+          <div class="eq-col">
+            <article class="card eq eq--f reveal" id="eqF">
+              <header><img src="image/flavio-retrato.webp" alt="" width="44" height="44" class="avatar avatar--f avatar--sm"><h3>Flávio Bolsonaro</h3></header>
+              <p class="eq__formula mono" data-eq></p>
+              <dl class="eq__stats">
+                <div><dt>R²</dt><dd class="num" data-r2></dd></div>
+                <div><dt>Reta em 100%</dt><dd class="num" data-prev></dd></div>
+                <div><dt>Oficial</dt><dd class="num" data-real></dd></div>
+                <div><dt>Erro</dt><dd class="num" data-erro></dd></div>
+              </dl>
+            </article>
+            <article class="card eq eq--l reveal" id="eqL">
+              <header><img src="image/lula-retrato.webp" alt="" width="44" height="44" class="avatar avatar--l avatar--sm"><h3>Lula</h3></header>
+              <p class="eq__formula mono" data-eq></p>
+              <dl class="eq__stats">
+                <div><dt>R²</dt><dd class="num" data-r2></dd></div>
+                <div><dt>Reta em 100%</dt><dd class="num" data-prev></dd></div>
+                <div><dt>Oficial</dt><dd class="num" data-real></dd></div>
+                <div><dt>Erro</dt><dd class="num" data-erro></dd></div>
+              </dl>
+            </article>
+            <div class="insight reveal" id="insight"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 03 TEMPO REAL ============ -->
+    <section class="section" id="tempo-real">
+      <div class="wrap">
+        <header class="sec-head reveal">
+          <span class="tag tag--rose"><svg class="ico"><use href="#i-live"/></svg> Módulo 03 · 2º turno ao vivo</span>
+          <h2>Projeção em tempo real</h2>
+          <p>
+            No dia do 2º turno, a ideia é ler cada atualização da apuração e corrigir a parcial com o que aprendemos no 1º:
+            a ordem em que as regiões chegam puxa os números para um lado antes de voltar.
+          </p>
+        </header>
+
+        <div class="card wip reveal">
+          <div class="wip__tape" aria-hidden="true"><span id="fita">EM CONSTRUÇÃO · </span></div>
+          <div class="wip__grid">
+            <div class="wip__ghost" aria-hidden="true">
+              <div class="ghost-head">
+                <span class="live-dot"></span><span class="ghost-pill">AO VIVO</span>
+                <span class="sk sk--w40"></span>
+              </div>
+              <div class="ghost-duo">
+                <div class="ghost-cand"><span class="sk sk--circle"></span><span class="sk sk--w60"></span><span class="sk sk--big"></span></div>
+                <div class="ghost-cand"><span class="sk sk--circle"></span><span class="sk sk--w60"></span><span class="sk sk--big"></span></div>
+              </div>
+              <svg class="ghost-chart" viewBox="0 0 400 140" preserveAspectRatio="none">
+                <path class="ghost-line ghost-line--f" d="M0 40 C 60 30, 100 45, 150 55 S 260 72, 400 78"/>
+                <path class="ghost-line ghost-line--l" d="M0 105 C 60 112, 110 98, 160 88 S 270 76, 400 70"/>
+                <line x1="0" y1="72" x2="400" y2="72" class="ghost-50"/>
+              </svg>
+            </div>
+            <div class="wip__copy">
+              <span class="pill pill--warn"><svg class="ico"><use href="#i-alert"/></svg> Em construção</span>
+              <h3>O que vai aparecer aqui</h3>
+              <ul class="roadmap">
+                <li class="done"><svg class="ico"><use href="#i-check"/></svg><div><b>Retas do 1º turno</b><span>Regressão linear simples para Flávio, Lula e a 3ª via.</span></div></li>
+                <li class="done"><svg class="ico"><use href="#i-check"/></svg><div><b>Simulador de transferência</b><span>O módulo 01 desta página.</span></div></li>
+                <li><svg class="ico"><use href="#i-dashed"/></svg><div><b>Leitura da apuração do 2º turno</b><span>Atualização automática a cada nova totalização.</span></div></li>
+                <li><svg class="ico"><use href="#i-dashed"/></svg><div><b>Correção pela "deriva"</b><span>Quanto a parcial do 1º turno estava longe do final em cada % de urnas, aplicado à parcial do 2º.</span></div></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="dock" id="dock" aria-hidden="true">
+    <span class="dock__c"><img src="image/flavio-retrato.webp" alt="" width="28" height="28"><b class="num" id="dockF"></b></span>
+    <span class="dock__bar"><i id="dockBar"></i></span>
+    <span class="dock__c"><b class="num" id="dockL"></b><img src="image/lula-retrato.webp" alt="" width="28" height="28"></span>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <footer class="footer">
+    <div class="wrap footer__in">
+      <div class="logo logo--footer">
+        <span class="logo__mark">2T</span>
+        <span class="logo__txt"><strong>2º Turno em Jogo</strong><small>Estudo acadêmico de regressão linear</small></span>
+      </div>
+      <nav class="footer__links" aria-label="Rodapé">
+        <a href="metodologia.html">Metodologia</a>
+        <a href="https://github.com/GuilhermeNobre/presidente-2026-evolucao-apuracao/blob/main/notebooks/regressao_linear.ipynb" target="_blank" rel="noopener">Notebook no GitHub</a>
+        <a href="https://github.com/GuilhermeNobre/presidente-2026-evolucao-apuracao" target="_blank" rel="noopener">Repositório</a>
+      </nav>
+      <p class="footer__src">Simulação acadêmica, não é previsão eleitoral. Dados: TSE, via g1 (<span class="mono" id="fAtual"></span>). Código MIT · dados processados CC BY 4.0.<br>Fotos dos candidatos: uso ilustrativo, sem fins comerciais.</p>
+    </div>
+  </footer>
+
+  <script src="js/dados.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
