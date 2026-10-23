@@ -71,6 +71,7 @@
     notebook: () => ({ ...transfPadrao(), caiado: { lula: 40, fora: 0 } }),
     flavio: () => Object.fromEntries(BLOCOS.map((b) => [b, { lula: 30, fora: 10 }])),
     lula: () => Object.fromEntries(BLOCOS.map((b) => [b, { lula: 70, fora: 10 }])),
+    abst20: () => Object.fromEntries(BLOCOS.map((b) => [b, { lula: 50, fora: 20 }])),
     abstencao: () => Object.fromEntries(BLOCOS.map((b) => [b, { lula: 50, fora: 40 }])),
   };
 

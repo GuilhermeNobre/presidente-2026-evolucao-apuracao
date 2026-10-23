@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,8 +12,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <script>
-    // Aplica o tema salvo antes da pintura, para não piscar.
-    try { var t = localStorage.getItem('tema'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
     document.documentElement.classList.add('js');
   </script>
 </head>
@@ -63,10 +61,6 @@
       </nav>
       <div class="topbar__actions">
         <a href="#simulador" class="btn btn--amber btn--sm hide-sm">Simular</a>
-        <button class="icon-btn" id="tema" type="button" aria-label="Alternar tema claro/escuro">
-          <svg class="ico ico--moon"><use href="#i-moon"/></svg>
-          <svg class="ico ico--sun"><use href="#i-sun"/></svg>
-        </button>
         <button class="icon-btn show-sm" id="menuBtn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menuMobile">
           <svg class="ico"><use href="#i-menu"/></svg>
         </button>
@@ -168,7 +162,7 @@
             <span class="ctrl__label">Ponto de partida</span>
             <div class="seg seg--dark" role="radiogroup" aria-label="Ponto de partida do 1º turno" id="baseGroup">
               <button type="button" role="radio" data-base="reta">Retas da regressão</button>
-              <button type="button" role="radio" data-base="oficial">Resultado oficial</button>
+              <button type="button" role="radio" data-base="oficial" disabled aria-disabled="true" title="Ainda não há resultado oficial">Resultado oficial <span class="soon">em breve</span></button>
             </div>
           </div>
           <div class="ctrl">
@@ -187,6 +181,7 @@
               <button type="button" class="chip" data-preset="notebook">📓 Cenário do notebook</button>
               <button type="button" class="chip" data-preset="flavio">🔵 Onda Flávio</button>
               <button type="button" class="chip" data-preset="lula">🔴 Onda Lula</button>
+              <button type="button" class="chip" data-preset="abst20">🚶 20% de abstenção</button>
               <button type="button" class="chip" data-preset="abstencao">🚪 Abstenção alta</button>
             </div>
           </div>
