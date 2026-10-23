@@ -10,9 +10,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=20261023b">
   <script>
     document.documentElement.classList.add('js');
+    // Se algum script falhar, mostra o conteúdo mesmo assim (sem as animações de entrada).
+    window.addEventListener('error', function () { document.documentElement.classList.remove('js'); });
   </script>
 </head>
 <body>
@@ -417,7 +419,7 @@
     </div>
   </footer>
 
-  <script src="js/dados.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/dados.js?v=20261023b"></script>
+  <script src="js/app.js?v=20261023b"></script>
 </body>
 </html>
